@@ -19,6 +19,10 @@ using namespace ITMLib;
 template <typename TVoxel, typename TIndex>
 ITMBasicEngine<TVoxel,TIndex>::ITMBasicEngine(const ITMLibSettings *settings, const ITMRGBDCalib& calib, Vector2i imgSize_rgb, Vector2i imgSize_d)
 {
+	// Added mesh
+	printf("Mesh initialized\n");
+	this->mesh = dummyFunctionForCreatingMesh();
+	this->mesh->triangles->Clear();
 	this->settings = settings;
 
 	if ((imgSize_d.x == -1) || (imgSize_d.y == -1)) imgSize_d = imgSize_rgb;
@@ -31,11 +35,11 @@ ITMBasicEngine<TVoxel,TIndex>::ITMBasicEngine(const ITMLibSettings *settings, co
 	lowLevelEngine = ITMLowLevelEngineFactory::MakeLowLevelEngine(deviceType);
 	viewBuilder = ITMViewBuilderFactory::MakeViewBuilder(calib, deviceType);
 	visualisationEngine = ITMVisualisationEngineFactory::MakeVisualisationEngine<TVoxel,TIndex>(deviceType);
-
 	meshingEngine = NULL;
-	if (settings->createMeshingEngine)
+	if (settings->createMeshingEngine) {
+		printf("Creating mesh called... ");
 		meshingEngine = ITMMeshingEngineFactory::MakeMeshingEngine<TVoxel,TIndex>(deviceType);
-
+	}
 	denseMapper = new ITMDenseMapper<TVoxel,TIndex>(settings);
 	denseMapper->ResetScene(scene);
 
@@ -96,16 +100,23 @@ ITMBasicEngine<TVoxel,TIndex>::~ITMBasicEngine()
 }
 
 template <typename TVoxel, typename TIndex>
+ITMMesh* ITMBasicEngine<TVoxel,TIndex>::dummyFunctionForCreatingMesh(){
+	ITMMesh *mesh = new ITMMesh(settings->GetMemoryType());
+	return mesh; 
+}
+
+template <typename TVoxel, typename TIndex>
 void ITMBasicEngine<TVoxel,TIndex>::SaveSceneToMesh(const char *objFileName)
 {
 	if (meshingEngine == NULL) return;
 
-	ITMMesh *mesh = new ITMMesh(settings->GetMemoryType());
+
+	// ITMMesh *mesh = dummyFunctionForCreatingMesh();
 
 	meshingEngine->MeshScene(mesh, scene);
 	mesh->WriteSTL(objFileName);
 
-	delete mesh;
+	// delete mesh;
 }
 
 template <typename TVoxel, typename TIndex>

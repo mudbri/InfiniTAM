@@ -43,6 +43,9 @@ namespace ITMLib
 		FernRelocLib::Relocaliser<float> *relocaliser;
 		ITMUChar4Image *kfRaycast;
 
+		// Added mesh so that it is initialized only once
+		ITMMesh* mesh;
+		
 		/// Pointer for storing the current input frame
 		ITMView *view;
 
@@ -60,6 +63,7 @@ namespace ITMLib
 
 		/// Extracts a mesh from the current scene and saves it to the model file specified by the file name
 		void SaveSceneToMesh(const char *fileName);
+		ITMMesh* dummyFunctionForCreatingMesh();
 
 		/// save and load the full scene and relocaliser (if any) to/from file
 		void SaveToFile();

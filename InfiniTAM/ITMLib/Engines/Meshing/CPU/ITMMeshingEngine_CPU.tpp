@@ -8,6 +8,7 @@ using namespace ITMLib;
 template<class TVoxel>
 void ITMMeshingEngine_CPU<TVoxel, ITMVoxelBlockHash>::MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMVoxelBlockHash> *scene)
 {
+	printf("Inside ITMMeshingEngine_CPU...\n");
 	ITMMesh::Triangle *triangles = mesh->triangles->GetData(MEMORYDEVICE_CPU);
 	const TVoxel *localVBA = scene->localVBA.GetVoxelBlocks();
 	const ITMHashEntry *hashTable = scene->index.GetEntries();
@@ -15,7 +16,8 @@ void ITMMeshingEngine_CPU<TVoxel, ITMVoxelBlockHash>::MeshScene(ITMMesh *mesh, c
 	int noTriangles = 0, noMaxTriangles = mesh->noMaxTriangles, noTotalEntries = scene->index.noTotalEntries;
 	float factor = scene->sceneParams->voxelSize;
 
-	mesh->triangles->Clear();
+	// Not clearing mesh triangles. This means that the new angle that does not have data for a particular voxel will have old triangles. This might be incorrect
+	// mesh->triangles->Clear();
 
 	for (int entryId = 0; entryId < noTotalEntries; entryId++)
 	{
