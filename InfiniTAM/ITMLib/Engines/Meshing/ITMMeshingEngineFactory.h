@@ -27,7 +27,7 @@ namespace ITMLib
 		{
 			ITMMeshingEngine<TVoxel, TIndex> *meshingEngine = NULL;
 
-			printf("device type is %d\n", deviceType);
+			// printf("device type is %d\n", deviceType);
 			switch (deviceType)
 			{
 			case ITMLibSettings::DEVICE_CPU:

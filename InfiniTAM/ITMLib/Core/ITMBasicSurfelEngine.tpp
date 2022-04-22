@@ -88,6 +88,12 @@ ITMBasicSurfelEngine<TSurfel>::~ITMBasicSurfelEngine()
 }
 
 template <typename TSurfel>
+void ITMBasicSurfelEngine<TSurfel>::saveMesh(const char *objFileName)
+{
+	// Not yet implemented for surfel scenes
+}
+
+template <typename TSurfel>
 void ITMBasicSurfelEngine<TSurfel>::SaveSceneToMesh(const char *objFileName)
 {
 	// Not yet implemented for surfel scenes

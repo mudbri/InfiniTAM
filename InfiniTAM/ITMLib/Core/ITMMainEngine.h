@@ -78,7 +78,7 @@ namespace ITMLib
 
 		/// Extracts a mesh from the current scene and saves it to the model file specified by the file name
 		virtual void SaveSceneToMesh(const char *fileName) { };
-
+		virtual void saveMesh(const char *objFileName) { };
 		/// save and load the full scene and relocaliser (if any) to/from file
 		virtual void SaveToFile() { };
 		virtual void LoadFromFile() { };

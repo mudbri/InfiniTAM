@@ -65,7 +65,7 @@ bool CLIEngine::ProcessFrame()
 	float processedTime_inst = sdkGetTimerValue(&timer_instant);
 	float processedTime_avg = sdkGetAverageTimerValue(&timer_average);
 
-	printf("frame %i: time %.2f, avg %.2f\n", currentFrameNo, processedTime_inst, processedTime_avg);
+	// printf("frame %i: time %.2f, avg %.2f\n", currentFrameNo, processedTime_inst, processedTime_avg);
 
 	currentFrameNo++;
 
@@ -79,7 +79,9 @@ void CLIEngine::Run()
 		if (!ProcessFrame()) break;
 		i++;
 		if (i % 5 == 0)
-			mainEngine->SaveSceneToMesh("mesh-cli.stl");
+			mainEngine->SaveSceneToMesh("dummy");
+		// if (i == 100) // for debugging, save mesh after 100 frames
+		// 	mainEngine->saveMesh("mesh-cli-modified.stl");
 	}
 }
 

@@ -20,7 +20,7 @@ template <typename TVoxel, typename TIndex>
 ITMBasicEngine<TVoxel,TIndex>::ITMBasicEngine(const ITMLibSettings *settings, const ITMRGBDCalib& calib, Vector2i imgSize_rgb, Vector2i imgSize_d)
 {
 	// Added mesh
-	printf("Mesh initialized\n");
+	// printf("Mesh initialized\n");
 	this->mesh = dummyFunctionForCreatingMesh();
 	this->mesh->triangles->Clear();
 	this->settings = settings;
@@ -37,7 +37,7 @@ ITMBasicEngine<TVoxel,TIndex>::ITMBasicEngine(const ITMLibSettings *settings, co
 	visualisationEngine = ITMVisualisationEngineFactory::MakeVisualisationEngine<TVoxel,TIndex>(deviceType);
 	meshingEngine = NULL;
 	if (settings->createMeshingEngine) {
-		printf("Creating mesh called... ");
+		// printf("Creating mesh called... ");
 		meshingEngine = ITMMeshingEngineFactory::MakeMeshingEngine<TVoxel,TIndex>(deviceType);
 	}
 	denseMapper = new ITMDenseMapper<TVoxel,TIndex>(settings);
@@ -100,6 +100,12 @@ ITMBasicEngine<TVoxel,TIndex>::~ITMBasicEngine()
 }
 
 template <typename TVoxel, typename TIndex>
+void ITMBasicEngine<TVoxel,TIndex>::saveMesh(const char *objFileName){
+	printf("saving mesh\n");
+	mesh->WriteSTL(objFileName);
+}
+
+template <typename TVoxel, typename TIndex>
 ITMMesh* ITMBasicEngine<TVoxel,TIndex>::dummyFunctionForCreatingMesh(){
 	ITMMesh *mesh = new ITMMesh(settings->GetMemoryType());
 	return mesh; 
@@ -114,7 +120,7 @@ void ITMBasicEngine<TVoxel,TIndex>::SaveSceneToMesh(const char *objFileName)
 	// ITMMesh *mesh = dummyFunctionForCreatingMesh();
 
 	meshingEngine->MeshScene(mesh, scene);
-	mesh->WriteSTL(objFileName);
+	// mesh->WriteSTL(objFileName);
 
 	// delete mesh;
 }

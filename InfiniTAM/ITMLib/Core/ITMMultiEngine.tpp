@@ -298,6 +298,11 @@ ITMTrackingState::TrackingResult ITMMultiEngine<TVoxel, TIndex>::ProcessFrame(IT
 }
 
 template <typename TVoxel, typename TIndex>
+void ITMMultiEngine<TVoxel,TIndex>::saveMesh(const char *objFileName){
+	// Not yet implemented for surfel scenes
+}
+
+template <typename TVoxel, typename TIndex>
 void ITMMultiEngine<TVoxel, TIndex>::SaveSceneToMesh(const char *modelFileName)
 {
 	if (meshingEngine == NULL) return;

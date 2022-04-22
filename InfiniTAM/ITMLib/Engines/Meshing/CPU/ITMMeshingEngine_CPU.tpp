@@ -8,7 +8,7 @@ using namespace ITMLib;
 template<class TVoxel>
 void ITMMeshingEngine_CPU<TVoxel, ITMVoxelBlockHash>::MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMVoxelBlockHash> *scene)
 {
-	printf("Inside ITMMeshingEngine_CPU...\n");
+	// printf("Inside ITMMeshingEngine_CPU...\n");
 	ITMMesh::Triangle *triangles = mesh->triangles->GetData(MEMORYDEVICE_CPU);
 	const TVoxel *localVBA = scene->localVBA.GetVoxelBlocks();
 	const ITMHashEntry *hashTable = scene->index.GetEntries();
