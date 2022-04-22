@@ -74,8 +74,12 @@ bool CLIEngine::ProcessFrame()
 
 void CLIEngine::Run()
 {
+	int i = 0;
 	while (true) {
 		if (!ProcessFrame()) break;
+		i++;
+		if (i % 5 == 0)
+			mainEngine->SaveSceneToMesh("mesh-cli.stl");
 	}
 }
 
