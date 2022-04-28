@@ -21,15 +21,16 @@ ITMBasicEngine<TVoxel,TIndex>::ITMBasicEngine(const ITMLibSettings *settings, co
 {
 	// Added mesh
 	// printf("Mesh initialized\n");
+	this->settings = settings;
 	this->mesh = dummyFunctionForCreatingMesh();
 	this->mesh->triangles->Clear();
-	this->settings = settings;
-
+     
 	if ((imgSize_d.x == -1) || (imgSize_d.y == -1)) imgSize_d = imgSize_rgb;
 
 	MemoryDeviceType memoryType = settings->GetMemoryType();
 	this->scene = new ITMScene<TVoxel,TIndex>(&settings->sceneParams, settings->swappingMode == ITMLibSettings::SWAPPINGMODE_ENABLED, memoryType);
-
+	
+    hashEntries = new std::vector<ITMHashEntry>;
 	const ITMLibSettings::DeviceType deviceType = settings->deviceType;
 
 	lowLevelEngine = ITMLowLevelEngineFactory::MakeLowLevelEngine(deviceType);
@@ -102,6 +103,7 @@ ITMBasicEngine<TVoxel,TIndex>::~ITMBasicEngine()
 template <typename TVoxel, typename TIndex>
 void ITMBasicEngine<TVoxel,TIndex>::saveMesh(const char *objFileName){
 	printf("saving mesh\n");
+	printf("%s\n", objFileName);
 	mesh->WriteSTL(objFileName);
 }
 
@@ -118,8 +120,8 @@ void ITMBasicEngine<TVoxel,TIndex>::SaveSceneToMesh(const char *objFileName)
 
 
 	// ITMMesh *mesh = dummyFunctionForCreatingMesh();
-
-	meshingEngine->MeshScene(mesh, scene);
+    
+	meshingEngine->MeshScene(mesh, scene, *hashEntries);
 	// mesh->WriteSTL(objFileName);
 
 	// delete mesh;
@@ -307,8 +309,7 @@ ITMTrackingState::TrackingResult ITMBasicEngine<TVoxel,TIndex>::ProcessFrame(ITM
 
 			const FernRelocLib::PoseDatabase::PoseInScene & keyframe = relocaliser->RetrievePose(NN);
 			trackingState->pose_d->SetFrom(&keyframe.pose);
-
-			denseMapper->UpdateVisibleList(view, trackingState, scene, renderState_live, true);
+			denseMapper->UpdateVisibleList(view, trackingState, scene, *hashEntries, renderState_live, true);
 			trackingController->Prepare(trackingState, scene, view, visualisationEngine, renderState_live); 
 			trackingController->Track(trackingState, view);
 
@@ -319,7 +320,7 @@ ITMTrackingState::TrackingResult ITMBasicEngine<TVoxel,TIndex>::ProcessFrame(ITM
 	bool didFusion = false;
 	if ((trackerResult == ITMTrackingState::TRACKING_GOOD || !trackingInitialised) && (fusionActive) && (relocalisationCount == 0)) {
 		// fusion
-		denseMapper->ProcessFrame(view, trackingState, scene, renderState_live);
+		denseMapper->ProcessFrame(view, trackingState, scene, *hashEntries, renderState_live, false);
 		didFusion = true;
 		if (framesProcessed > 50) trackingInitialised = true;
 
@@ -328,7 +329,7 @@ ITMTrackingState::TrackingResult ITMBasicEngine<TVoxel,TIndex>::ProcessFrame(ITM
 
 	if (trackerResult == ITMTrackingState::TRACKING_GOOD || trackerResult == ITMTrackingState::TRACKING_POOR)
 	{
-		if (!didFusion) denseMapper->UpdateVisibleList(view, trackingState, scene, renderState_live);
+		if (!didFusion) denseMapper->UpdateVisibleList(view, trackingState, scene, *hashEntries, renderState_live, false);
 
 		// raycast to renderState_live for tracking and free visualisation
 		trackingController->Prepare(trackingState, scene, view, visualisationEngine, renderState_live);

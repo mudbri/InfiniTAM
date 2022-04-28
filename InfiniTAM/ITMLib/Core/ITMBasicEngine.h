@@ -12,6 +12,7 @@
 #include "../Objects/Misc/ITMIMUCalibrator.h"
 
 #include "../../FernRelocLib/Relocaliser.h"
+#include <vector>
 
 namespace ITMLib
 {
@@ -34,6 +35,7 @@ namespace ITMLib
 		ITMTrackingController *trackingController;
 
 		ITMScene<TVoxel, TIndex> *scene;
+		std::vector<ITMHashEntry> *hashEntries;
 		ITMRenderState *renderState_live;
 		ITMRenderState *renderState_freeview;
 

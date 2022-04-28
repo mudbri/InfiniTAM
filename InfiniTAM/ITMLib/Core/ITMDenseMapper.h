@@ -5,6 +5,7 @@
 #include "../Engines/Reconstruction/Interface/ITMSceneReconstructionEngine.h"
 #include "../Engines/Swapping/Interface/ITMSwappingEngine.h"
 #include "../Utils/ITMLibSettings.h"
+#include <vector>
 
 namespace ITMLib
 {
@@ -23,10 +24,10 @@ namespace ITMLib
 		void ResetScene(ITMScene<TVoxel,TIndex> *scene) const;
 
 		/// Process a single frame
-		void ProcessFrame(const ITMView *view, const ITMTrackingState *trackingState, ITMScene<TVoxel,TIndex> *scene, ITMRenderState *renderState_live, bool resetVisibleList = false);
+		void ProcessFrame(const ITMView *view, const ITMTrackingState *trackingState, ITMScene<TVoxel,TIndex> *scene, std::vector<ITMHashEntry>& hashEntries, ITMRenderState *renderState_live, bool resetVisibleList = false);
 
 		/// Update the visible list (this can be called to update the visible list when fusion is turned off)
-		void UpdateVisibleList(const ITMView *view, const ITMTrackingState *trackingState, ITMScene<TVoxel, TIndex> *scene, ITMRenderState *renderState, bool resetVisibleList = false);
+		void UpdateVisibleList(const ITMView *view, const ITMTrackingState *trackingState, ITMScene<TVoxel, TIndex> *scene, std::vector<ITMHashEntry>& hashEntries, ITMRenderState *renderState, bool resetVisibleList = false);
 
 		/** \brief Constructor
 		    Ommitting a separate image size for the depth images

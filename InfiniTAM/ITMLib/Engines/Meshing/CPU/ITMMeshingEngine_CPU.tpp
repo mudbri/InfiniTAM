@@ -6,9 +6,9 @@
 using namespace ITMLib;
 
 template<class TVoxel>
-void ITMMeshingEngine_CPU<TVoxel, ITMVoxelBlockHash>::MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMVoxelBlockHash> *scene)
+void ITMMeshingEngine_CPU<TVoxel, ITMVoxelBlockHash>::MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMVoxelBlockHash> *scene, std::vector<ITMHashEntry>& hashEntries)
 {
-	// printf("Inside ITMMeshingEngine_CPU...\n");
+	printf("Inside ITMMeshingEngine_CPU...\n");
 	ITMMesh::Triangle *triangles = mesh->triangles->GetData(MEMORYDEVICE_CPU);
 	const TVoxel *localVBA = scene->localVBA.GetVoxelBlocks();
 	const ITMHashEntry *hashTable = scene->index.GetEntries();
@@ -19,13 +19,20 @@ void ITMMeshingEngine_CPU<TVoxel, ITMVoxelBlockHash>::MeshScene(ITMMesh *mesh, c
 	// Not clearing mesh triangles. This means that the new angle that does not have data for a particular voxel will have old triangles. This might be incorrect
 	// mesh->triangles->Clear();
 
-	for (int entryId = 0; entryId < noTotalEntries; entryId++)
+	int numMisses = 0;
+	int numHits = 0;
+
+	int numFullEntries = hashEntries.size();
+	for (int entryId = 0; entryId < numFullEntries; entryId++)
 	{
 		Vector3i globalPos;
-		const ITMHashEntry &currentHashEntry = hashTable[entryId];
+		const ITMHashEntry &currentHashEntry = hashEntries[entryId];
 
-		if (currentHashEntry.ptr < 0) continue;
-
+		if (currentHashEntry.ptr < 0) {
+			numMisses++;
+			continue;
+		}
+		numHits++;
 		globalPos = currentHashEntry.pos.toInt() * SDF_BLOCK_SIZE;
 
 		for (int z = 0; z < SDF_BLOCK_SIZE; z++) for (int y = 0; y < SDF_BLOCK_SIZE; y++) for (int x = 0; x < SDF_BLOCK_SIZE; x++)
@@ -45,6 +52,8 @@ void ITMMeshingEngine_CPU<TVoxel, ITMVoxelBlockHash>::MeshScene(ITMMesh *mesh, c
 			}
 		}
 	}
-
+	printf("Num misses:%d\n", numMisses);
+	printf("Num hits:%d\n", numHits);
+	printf("noTotalEntries:%d\n", noTotalEntries);
 	mesh->noTotalTriangles = noTriangles;
 }

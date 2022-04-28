@@ -5,7 +5,7 @@
 #include <math.h>
 
 #include "../../../Objects/Meshing/ITMMesh.h"
-#include "../../../Objects/Scene/ITMScene.h"
+#include "../../../Objects/Scene/ITMScene.h" 
 
 namespace ITMLib
 {
@@ -13,7 +13,7 @@ namespace ITMLib
 	class ITMMeshingEngine
 	{
 	public:
-		virtual void MeshScene(ITMMesh *mesh, const ITMScene<TVoxel,TIndex> *scene) = 0;
+		virtual void MeshScene(ITMMesh *mesh, const ITMScene<TVoxel,TIndex> *scene, std::vector<ITMHashEntry>& hashEntries) = 0;
 
 		ITMMeshingEngine(void) { }
 		virtual ~ITMMeshingEngine(void) { }

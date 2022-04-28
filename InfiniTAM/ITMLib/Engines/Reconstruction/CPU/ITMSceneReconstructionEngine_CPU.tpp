@@ -116,7 +116,7 @@ void ITMSceneReconstructionEngine_CPU<TVoxel, ITMVoxelBlockHash>::IntegrateIntoS
 
 template<class TVoxel>
 void ITMSceneReconstructionEngine_CPU<TVoxel, ITMVoxelBlockHash>::AllocateSceneFromDepth(ITMScene<TVoxel, ITMVoxelBlockHash> *scene, const ITMView *view,
-	const ITMTrackingState *trackingState, const ITMRenderState *renderState, bool onlyUpdateVisibleList, bool resetVisibleList)
+	const ITMTrackingState *trackingState, const ITMRenderState *renderState, std::vector<ITMHashEntry>& hashEntries,  bool onlyUpdateVisibleList, bool resetVisibleList)
 {
 	Vector2i depthImgSize = view->depth->noDims;
 	float voxelSize = scene->sceneParams->voxelSize;
@@ -126,7 +126,7 @@ void ITMSceneReconstructionEngine_CPU<TVoxel, ITMVoxelBlockHash>::AllocateSceneF
 
 	ITMRenderState_VH *renderState_vh = (ITMRenderState_VH*)renderState;
 	if (resetVisibleList) renderState_vh->noVisibleEntries = 0;
-
+	
 	M_d = trackingState->pose_d->GetM(); M_d.inv(invM_d);
 
 	projParams_d = view->calib.intrinsics_d.projectionParamsSimple.all;
@@ -198,6 +198,7 @@ void ITMSceneReconstructionEngine_CPU<TVoxel, ITMVoxelBlockHash>::AllocateSceneF
 					hashEntry.offset = 0;
 
 					hashTable[targetIdx] = hashEntry;
+					hashEntries.push_back(hashEntry);
 				}
 				else
 				{
@@ -225,9 +226,9 @@ void ITMSceneReconstructionEngine_CPU<TVoxel, ITMVoxelBlockHash>::AllocateSceneF
 					int exlOffset = excessAllocationList[exlIdx];
 
 					hashTable[targetIdx].offset = exlOffset + 1; //connect to child
-
+                    hashEntries.back().offset = exlOffset + 1;
 					hashTable[SDF_BUCKET_NUM + exlOffset] = hashEntry; //add child to the excess list
-
+					hashEntries.push_back(hashEntry);
 					entriesVisibleType[SDF_BUCKET_NUM + exlOffset] = 1; //make child visible and in memory
 				}
 				else
@@ -331,7 +332,7 @@ void ITMSceneReconstructionEngine_CPU<TVoxel,ITMPlainVoxelArray>::ResetScene(ITM
 
 template<class TVoxel>
 void ITMSceneReconstructionEngine_CPU<TVoxel, ITMPlainVoxelArray>::AllocateSceneFromDepth(ITMScene<TVoxel, ITMPlainVoxelArray> *scene, const ITMView *view,
-	const ITMTrackingState *trackingState, const ITMRenderState *renderState, bool onlyUpdateVisibleList, bool resetVisibleList)
+	const ITMTrackingState *trackingState, const ITMRenderState *renderState, std::vector<ITMHashEntry>& hashEntries, bool onlyUpdateVisibleList, bool resetVisibleList)
 {}
 
 template<class TVoxel>

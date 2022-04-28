@@ -222,7 +222,7 @@ ITMTrackingState::TrackingResult ITMMultiEngine<TVoxel, TIndex>::ProcessFrame(IT
 		// if a new relocalisation/loopclosure is started, this will do the initial raycasting before tracking can start
 		if (todoList[i].preprepare) 
 		{
-			denseMapper->UpdateVisibleList(view, currentLocalMap->trackingState, currentLocalMap->scene, currentLocalMap->renderState);
+			denseMapper->UpdateVisibleList(view, currentLocalMap->trackingState, currentLocalMap->scene, *(new std::vector<ITMHashEntry>), currentLocalMap->renderState);
 			trackingController->Prepare(currentLocalMap->trackingState, currentLocalMap->scene, view, visualisationEngine, currentLocalMap->renderState);
 		}
 
@@ -273,8 +273,8 @@ ITMTrackingState::TrackingResult ITMMultiEngine<TVoxel, TIndex>::ProcessFrame(IT
 		}
 
 		// fusion in any subscene as long as tracking is good for the respective subscene
-		if (todoList[i].fusion) denseMapper->ProcessFrame(view, currentLocalMap->trackingState, currentLocalMap->scene, currentLocalMap->renderState);
-		else if (todoList[i].prepare) denseMapper->UpdateVisibleList(view, currentLocalMap->trackingState, currentLocalMap->scene, currentLocalMap->renderState);
+		if (todoList[i].fusion) denseMapper->ProcessFrame(view, currentLocalMap->trackingState, currentLocalMap->scene, *(new std::vector<ITMHashEntry>), currentLocalMap->renderState);
+		else if (todoList[i].prepare) denseMapper->UpdateVisibleList(view, currentLocalMap->trackingState, currentLocalMap->scene, *(new std::vector<ITMHashEntry>), currentLocalMap->renderState);
 
 		// raycast to renderState_live for tracking and free visualisation
 		if (todoList[i].prepare) trackingController->Prepare(currentLocalMap->trackingState, currentLocalMap->scene, view, visualisationEngine, currentLocalMap->renderState);
