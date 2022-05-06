@@ -367,6 +367,23 @@ namespace ORUtils {
 		return (lhs.x == rhs.x) && (lhs.y == rhs.y) && (lhs.z == rhs.z);
 	}
 
+	template <typename T1, typename T2> _CPU_AND_GPU_CODE_ inline bool operator < (const Vector3<T1> &lhs, const Vector3<T2> &rhs){
+		if (lhs.x < rhs.x)
+			return true;
+		else if (lhs.x > rhs.x)
+			return false;
+
+		if (lhs.y < rhs.y)
+			return true;
+		else if (lhs.y > rhs.y)
+			return false;
+
+		if (lhs.z < rhs.z)
+			return true;
+		else if (lhs.z >= rhs.z)
+			return false;
+		}
+
 	////////////////////////////////////////////////////////
 	//  Non-member functions
 	////////////////////////////////////////////////////////

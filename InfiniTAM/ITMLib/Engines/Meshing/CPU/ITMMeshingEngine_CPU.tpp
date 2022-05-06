@@ -7,7 +7,7 @@
 using namespace ITMLib;
 
 template<class TVoxel>
-void ITMMeshingEngine_CPU<TVoxel, ITMVoxelBlockHash>::MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMVoxelBlockHash> *scene, std::set< Vector3i >& possibleVoxels)
+void ITMMeshingEngine_CPU<TVoxel, ITMVoxelBlockHash>::MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMVoxelBlockHash> *scene, std::vector< Vector3i >& voxelsIter)
 {
 	ITMMesh::Triangle *triangles = mesh->triangles->GetData(MEMORYDEVICE_CPU);
 	const TVoxel *localVBA = scene->localVBA.GetVoxelBlocks();
@@ -22,56 +22,61 @@ void ITMMeshingEngine_CPU<TVoxel, ITMVoxelBlockHash>::MeshScene(ITMMesh *mesh, c
 	int numMisses = 0;
 	int numHits = 0;
 
-	// int numPotentialVoxels = possibleVoxels.size();
-	// for (auto itr = possibleVoxels.begin(); itr != possibleVoxels.end(); itr++) {
-	// 	Vector3f vertList[12];
-	// 	int cubeIndex = buildVertList(vertList, *itr, Vector3i(0, 0, 0), localVBA, hashTable);
+	int numPotentialVoxels = voxelsIter.size();
+	for (int count = 0; count < numPotentialVoxels; count++) {
+		Vector3f vertList[12];
+		int cubeIndex = buildVertList(vertList, voxelsIter[count], Vector3i(0, 0, 0), localVBA, hashTable);
 		
-	// 	if (cubeIndex < 0) continue;
+	if (cubeIndex < 0) {
+		numMisses++;
+		continue;
+	} 
 
-	// 	numHits++;
-	// 	for (int i = 0; triangleTable[cubeIndex][i] != -1; i += 3)
-	// 	{
-	// 		triangles[noTriangles].p0 = vertList[triangleTable[cubeIndex][i]] * factor;
-	// 		triangles[noTriangles].p1 = vertList[triangleTable[cubeIndex][i + 1]] * factor;
-	// 		triangles[noTriangles].p2 = vertList[triangleTable[cubeIndex][i + 2]] * factor;
-
-	// 		if (noTriangles < noMaxTriangles - 1) noTriangles++;
-	// 	}
-	// }
-
-	for (int entryId = 0; entryId < noTotalEntries; entryId++)
-	{
-		Vector3i globalPos;
-		const ITMHashEntry &currentHashEntry = hashTable[entryId];
-
-		if (currentHashEntry.ptr < 0) {
-			numMisses++;
-			continue;
-		}
-		globalPos = currentHashEntry.pos.toInt() * SDF_BLOCK_SIZE;
-
-		for (int z = 0; z < SDF_BLOCK_SIZE; z++) for (int y = 0; y < SDF_BLOCK_SIZE; y++) for (int x = 0; x < SDF_BLOCK_SIZE; x++)
+		numHits++;
+		for (int i = 0; triangleTable[cubeIndex][i] != -1; i += 3)
 		{
-			Vector3f vertList[12];
-			int cubeIndex = buildVertList(vertList, globalPos, Vector3i(x, y, z), localVBA, hashTable);
-			
-			if (cubeIndex < 0) continue;
+			triangles[noTriangles].p0 = vertList[triangleTable[cubeIndex][i]] * factor;
+			triangles[noTriangles].p1 = vertList[triangleTable[cubeIndex][i + 1]] * factor;
+			triangles[noTriangles].p2 = vertList[triangleTable[cubeIndex][i + 2]] * factor;
 
-			numHits++;
-			for (int i = 0; triangleTable[cubeIndex][i] != -1; i += 3)
-			{
-				triangles[noTriangles].p0 = vertList[triangleTable[cubeIndex][i]] * factor;
-				triangles[noTriangles].p1 = vertList[triangleTable[cubeIndex][i + 1]] * factor;
-				triangles[noTriangles].p2 = vertList[triangleTable[cubeIndex][i + 2]] * factor;
-
-				if (noTriangles < noMaxTriangles - 1) noTriangles++;
-			}
+			if (noTriangles < noMaxTriangles - 1) noTriangles++;
 		}
 	}
+
+	// for (int entryId = 0; entryId < noTotalEntries; entryId++)
+	// {
+	// 	Vector3i globalPos;
+	// 	const ITMHashEntry &currentHashEntry = hashTable[entryId];
+
+	// 	if (currentHashEntry.ptr < 0) {
+	// 		numMisses++;
+	// 		continue;
+	// 	}
+	// 	globalPos = currentHashEntry.pos.toInt() * SDF_BLOCK_SIZE;
+
+	// 	for (int z = 0; z < SDF_BLOCK_SIZE; z++) for (int y = 0; y < SDF_BLOCK_SIZE; y++) for (int x = 0; x < SDF_BLOCK_SIZE; x++)
+	// 	{
+	// 		Vector3f vertList[12];
+	// 		int cubeIndex = buildVertList(vertList, globalPos, Vector3i(x, y, z), localVBA, hashTable);
+			
+	// 		if (cubeIndex < 0) {
+	// 			numMisses++;
+	// 			continue;
+	// 		} 
+	// 		numHits++;
+	// 		for (int i = 0; triangleTable[cubeIndex][i] != -1; i += 3)
+	// 		{
+	// 			triangles[noTriangles].p0 = vertList[triangleTable[cubeIndex][i]] * factor;
+	// 			triangles[noTriangles].p1 = vertList[triangleTable[cubeIndex][i + 1]] * factor;
+	// 			triangles[noTriangles].p2 = vertList[triangleTable[cubeIndex][i + 2]] * factor;
+
+	// 			if (noTriangles < noMaxTriangles - 1) noTriangles++;
+	// 		}
+	// 	}
+	// }
 	printf("Num misses:%d\n", numMisses);
 	printf("Num hits:%d\n", numHits);
-	printf("Num possible voxels:%d\n", possibleVoxels.size());
+	printf("Num possible voxels:%d\n", voxelsIter.size());
 	printf("noTotalEntries:%d\n", noTotalEntries);
 	mesh->noTotalTriangles = noTriangles;
 }

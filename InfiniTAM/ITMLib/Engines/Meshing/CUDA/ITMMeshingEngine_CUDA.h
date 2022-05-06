@@ -19,7 +19,7 @@ namespace ITMLib
 		Vector4s *visibleBlockGlobalPos_device;
 
 	public:
-		void MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMVoxelBlockHash> *scene, std::set< Vector3i >& possibleVoxels);
+		void MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMVoxelBlockHash> *scene, std::vector< Vector3i >& voxelsIter);
 
 		ITMMeshingEngine_CUDA(void);
 		~ITMMeshingEngine_CUDA(void);
@@ -29,7 +29,7 @@ namespace ITMLib
 	class ITMMeshingEngine_CUDA<TVoxel, ITMPlainVoxelArray> : public ITMMeshingEngine < TVoxel, ITMPlainVoxelArray >
 	{
 	public:
-		void MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMPlainVoxelArray> *scene, std::set< Vector3i >& possibleVoxels);
+		void MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMPlainVoxelArray> *scene, std::set< Vector3i >& voxelsIter);
 
 		ITMMeshingEngine_CUDA(void);
 		~ITMMeshingEngine_CUDA(void);

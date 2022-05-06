@@ -27,7 +27,7 @@ namespace ITMLib
 			const ITMRenderState *renderState, bool onlyUpdateVisibleList = false, bool resetVisibleList = false, std::set< Vector3i > possibleVoxels);
 
 		void IntegrateIntoScene(ITMScene<TVoxel, ITMVoxelBlockHash> *scene, const ITMView *view, const ITMTrackingState *trackingState,
-			const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels);
+			const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels, std::vector< Vector3i >& voxelsIter);
 
 		ITMSceneReconstructionEngine_CUDA(void);
 		~ITMSceneReconstructionEngine_CUDA(void);
@@ -43,6 +43,6 @@ namespace ITMLib
 			const ITMRenderState *renderState, bool onlyUpdateVisibleList = false, bool resetVisibleList = false, std::set< Vector3i > possibleVoxels);
 
 		void IntegrateIntoScene(ITMScene<TVoxel, ITMPlainVoxelArray> *scene, const ITMView *view, const ITMTrackingState *trackingState,
-			const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels);
+			const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels, std::vector< Vector3i >& voxelsIter);
 	};
 }

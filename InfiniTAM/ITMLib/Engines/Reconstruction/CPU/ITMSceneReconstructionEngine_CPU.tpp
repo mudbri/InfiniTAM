@@ -46,7 +46,7 @@ void ITMSceneReconstructionEngine_CPU<TVoxel,ITMVoxelBlockHash>::ResetScene(ITMS
 
 template<class TVoxel>
 void ITMSceneReconstructionEngine_CPU<TVoxel, ITMVoxelBlockHash>::IntegrateIntoScene(ITMScene<TVoxel, ITMVoxelBlockHash> *scene, const ITMView *view,
-	const ITMTrackingState *trackingState, const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels)
+	const ITMTrackingState *trackingState, const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels, std::vector< Vector3i >& voxelsIter)
 {
 	Vector2i rgbImgSize = view->rgb->noDims;
 	Vector2i depthImgSize = view->depth->noDims;
@@ -114,7 +114,7 @@ void ITMSceneReconstructionEngine_CPU<TVoxel, ITMVoxelBlockHash>::IntegrateIntoS
 			newPos.z += z;
 
 			ComputeUpdatedVoxelInfo<TVoxel::hasColorInformation,TVoxel::hasConfidenceInformation, TVoxel>::compute(localVoxelBlock[locId], pt_model, M_d, 
-				projParams_d, M_rgb, projParams_rgb, mu, maxW, depth, confidence, depthImgSize, rgb, rgbImgSize, possibleVoxels, newPos);
+				projParams_d, M_rgb, projParams_rgb, mu, maxW, depth, confidence, depthImgSize, rgb, rgbImgSize, possibleVoxels, voxelsIter,newPos);
 		}
 	}
 }
@@ -339,7 +339,7 @@ void ITMSceneReconstructionEngine_CPU<TVoxel, ITMPlainVoxelArray>::AllocateScene
 
 template<class TVoxel>
 void ITMSceneReconstructionEngine_CPU<TVoxel, ITMPlainVoxelArray>::IntegrateIntoScene(ITMScene<TVoxel, ITMPlainVoxelArray> *scene, const ITMView *view,
-	const ITMTrackingState *trackingState, const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels)
+	const ITMTrackingState *trackingState, const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels, std::vector< Vector3i >& voxelsIter)
 {
 	Vector2i rgbImgSize = view->rgb->noDims;
 	Vector2i depthImgSize = view->depth->noDims;
@@ -389,6 +389,6 @@ void ITMSceneReconstructionEngine_CPU<TVoxel, ITMPlainVoxelArray>::IntegrateInto
 		newPos.y = y + arrayInfo->offset.y;
 		newPos.z = z + arrayInfo->offset.z;
 		ComputeUpdatedVoxelInfo<TVoxel::hasColorInformation, TVoxel::hasConfidenceInformation, TVoxel>::compute(voxelArray[locId], pt_model, M_d, projParams_d, M_rgb, projParams_rgb, mu, maxW, 
-			depth, depthImgSize, rgb, rgbImgSize, possibleVoxels, newPos);
+			depth, depthImgSize, rgb, rgbImgSize, possibleVoxels, voxelsIter, newPos);
 	}
 }

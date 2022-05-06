@@ -41,7 +41,7 @@ namespace ITMLib
 		    possibly colour information from the given view.
 		*/
 		virtual void IntegrateIntoScene(ITMScene<TVoxel,TIndex> *scene, const ITMView *view, const ITMTrackingState *trackingState,
-			const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels) = 0;
+			const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels, std::vector< Vector3i >& voxelsIter) = 0;
 
 		ITMSceneReconstructionEngine(void) { }
 		virtual ~ITMSceneReconstructionEngine(void) { }

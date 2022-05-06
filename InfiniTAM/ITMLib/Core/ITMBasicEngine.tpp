@@ -31,6 +31,7 @@ ITMBasicEngine<TVoxel,TIndex>::ITMBasicEngine(const ITMLibSettings *settings, co
 	this->scene = new ITMScene<TVoxel,TIndex>(&settings->sceneParams, settings->swappingMode == ITMLibSettings::SWAPPINGMODE_ENABLED, memoryType);
 	
     possibleVoxels = new std::set< Vector3i >;
+    voxelsIter = new std::vector< Vector3i >;
 	const ITMLibSettings::DeviceType deviceType = settings->deviceType;
 
 	lowLevelEngine = ITMLowLevelEngineFactory::MakeLowLevelEngine(deviceType);
@@ -121,7 +122,7 @@ void ITMBasicEngine<TVoxel,TIndex>::SaveSceneToMesh(const char *objFileName)
 
 	// ITMMesh *mesh = dummyFunctionForCreatingMesh();
     
-	meshingEngine->MeshScene(mesh, scene, *possibleVoxels);
+	meshingEngine->MeshScene(mesh, scene, *voxelsIter);
 	// mesh->WriteSTL(objFileName);
 
 	// delete mesh;
@@ -320,7 +321,7 @@ ITMTrackingState::TrackingResult ITMBasicEngine<TVoxel,TIndex>::ProcessFrame(ITM
 	bool didFusion = false;
 	if ((trackerResult == ITMTrackingState::TRACKING_GOOD || !trackingInitialised) && (fusionActive) && (relocalisationCount == 0)) {
 		// fusion
-		denseMapper->ProcessFrame(view, trackingState, scene, *possibleVoxels, renderState_live, false);
+		denseMapper->ProcessFrame(view, trackingState, scene, *possibleVoxels, *voxelsIter, renderState_live, false);
 		didFusion = true;
 		if (framesProcessed > 50) trackingInitialised = true;
 

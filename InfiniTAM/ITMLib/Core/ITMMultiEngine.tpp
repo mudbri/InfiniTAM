@@ -273,7 +273,7 @@ ITMTrackingState::TrackingResult ITMMultiEngine<TVoxel, TIndex>::ProcessFrame(IT
 		}
 
 		// fusion in any subscene as long as tracking is good for the respective subscene
-		if (todoList[i].fusion) denseMapper->ProcessFrame(view, currentLocalMap->trackingState, currentLocalMap->scene, *(new std::set< Vector3i >), currentLocalMap->renderState);
+		if (todoList[i].fusion) denseMapper->ProcessFrame(view, currentLocalMap->trackingState, currentLocalMap->scene, *(new std::set< Vector3i >), *(new std::vector< Vector3i >), currentLocalMap->renderState);
 		else if (todoList[i].prepare) denseMapper->UpdateVisibleList(view, currentLocalMap->trackingState, currentLocalMap->scene, *(new std::set< Vector3i >), currentLocalMap->renderState);
 
 		// raycast to renderState_live for tracking and free visualisation

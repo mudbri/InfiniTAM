@@ -37,6 +37,7 @@ namespace ITMLib
 
 		ITMScene<TVoxel, TIndex> *scene;
 		std::set< Vector3i > *possibleVoxels;
+		std::vector< Vector3i > *voxelsIter;
 		ITMRenderState *renderState_live;
 		ITMRenderState *renderState_freeview;
 

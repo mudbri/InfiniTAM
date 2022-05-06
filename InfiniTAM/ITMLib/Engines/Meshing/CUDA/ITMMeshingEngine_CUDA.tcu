@@ -15,12 +15,12 @@ __global__ void meshScene_device(ITMMesh::Triangle *triangles, unsigned int *noT
 	int noMaxTriangles, const Vector4s *visibleBlockGlobalPos, const TVoxel *localVBA, const ITMHashEntry *hashTable);
 
 template<int dummy>
-__global__ void findAllocateBlocks(Vector4s *visibleBlockGlobalPos, const ITMHashEntry *hashTable, int noTotalEntries, std::set< Vector3i >& possibleVoxels)
+__global__ void findAllocateBlocks(Vector4s *visibleBlockGlobalPos, const ITMHashEntry *hashTable, int noTotalEntries, std::vector< Vector3i >& voxelsIter)
 {
 	int entryId = threadIdx.x + blockIdx.x * blockDim.x;
 	if (entryId > noTotalEntries - 1) return;
 
-	const ITMHashEntry &currentHashEntry = possibleVoxels[entryId];
+	const ITMHashEntry &currentHashEntry = voxelsIter[entryId];
 
 	if (currentHashEntry.ptr >= 0) 
 		visibleBlockGlobalPos[currentHashEntry.ptr] = Vector4s(currentHashEntry.pos.x, currentHashEntry.pos.y, currentHashEntry.pos.z, 1);
@@ -41,7 +41,7 @@ ITMMeshingEngine_CUDA<TVoxel,ITMVoxelBlockHash>::~ITMMeshingEngine_CUDA(void)
 }
 
 template<class TVoxel>
-void ITMMeshingEngine_CUDA<TVoxel, ITMVoxelBlockHash>::MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMVoxelBlockHash> *scene, std::set< Vector3i >& possibleVoxels)
+void ITMMeshingEngine_CUDA<TVoxel, ITMVoxelBlockHash>::MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMVoxelBlockHash> *scene, std::vector< Vector3i >& voxelsIter)
 {
 	ITMMesh::Triangle *triangles = mesh->triangles->GetData(MEMORYDEVICE_CUDA);
 	const TVoxel *localVBA = scene->localVBA.GetVoxelBlocks();
@@ -56,7 +56,7 @@ void ITMMeshingEngine_CUDA<TVoxel, ITMVoxelBlockHash>::MeshScene(ITMMesh *mesh, 
 	{ // identify used voxel blocks
 		dim3 cudaBlockSize(256); 
 		dim3 gridSize((int)ceil((float)noTotalEntries / (float)cudaBlockSize.x));
-		findAllocateBlocks<-1><<<gridSize, cudaBlockSize>>>(visibleBlockGlobalPos_device, hashTable, noTotalEntries, possibleVoxels);
+		findAllocateBlocks<-1><<<gridSize, cudaBlockSize>>>(visibleBlockGlobalPos_device, hashTable, noTotalEntries, voxelsIter);
 		ORcudaKernelCheck;
 	}
 

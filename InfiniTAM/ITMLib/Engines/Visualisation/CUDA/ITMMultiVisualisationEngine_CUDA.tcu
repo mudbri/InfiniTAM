@@ -64,11 +64,11 @@ void ITMMultiVisualisationEngine_CUDA<TVoxel, TIndex>::CreateExpectedDepths(cons
 		float voxelSize = renderState->sceneParams.voxelSize;
 		const ITMHashEntry *hash_entries = renderState->indexData_host.index[localMapId];
 		Matrix4f localPose = pose->GetM() * renderState->indexData_host.posesInv[localMapId];
-		int nopossibleVoxels = ITMVoxelBlockHash::noTotalEntries;
+		int noHashEntries = ITMVoxelBlockHash::noTotalEntries;
 		dim3 blockSize(256);
-		dim3 gridSize((int)ceil((float)nopossibleVoxels / (float)blockSize.x));
+		dim3 gridSize((int)ceil((float)noHashEntries / (float)blockSize.x));
 		ORcudaSafeCall(cudaMemset(noTotalBlocks_device, 0, sizeof(uint)));
-		checkProjectAndSplitBlocks_device << <gridSize, blockSize >> > (hash_entries, nopossibleVoxels, localPose, intrinsics->projectionParamsSimple.all, imgSize, voxelSize, renderingBlockList_device, noTotalBlocks_device);
+		checkProjectAndSplitBlocks_device << <gridSize, blockSize >> > (hash_entries, noHashEntries, localPose, intrinsics->projectionParamsSimple.all, imgSize, voxelSize, renderingBlockList_device, noTotalBlocks_device);
 		ORcudaKernelCheck;
 
 		uint noTotalBlocks;

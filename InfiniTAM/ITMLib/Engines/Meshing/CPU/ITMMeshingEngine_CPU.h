@@ -10,14 +10,14 @@ namespace ITMLib
 	template<class TVoxel, class TIndex>
 	class ITMMeshingEngine_CPU : public ITMMeshingEngine < TVoxel, TIndex >
 	{
-		void MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, TIndex> *scene, std::set< Vector3i >& possibleVoxels) { }
+		void MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, TIndex> *scene, std::vector< Vector3i >& voxelsIter) { }
 	};
 
 	template<class TVoxel>
 	class ITMMeshingEngine_CPU<TVoxel, ITMVoxelBlockHash> : public ITMMeshingEngine < TVoxel, ITMVoxelBlockHash >
 	{
 	public:
-		void MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMVoxelBlockHash> *scene, std::set< Vector3i >& possibleVoxels);
+		void MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMVoxelBlockHash> *scene, std::vector< Vector3i >& voxelsIter);
 
 		ITMMeshingEngine_CPU(void) { }
 		~ITMMeshingEngine_CPU(void) { }

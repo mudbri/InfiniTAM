@@ -13,7 +13,7 @@ namespace ITMLib
 	class ITMMeshingEngine
 	{
 	public:
-		virtual void MeshScene(ITMMesh *mesh, const ITMScene<TVoxel,TIndex> *scene, std::set< Vector3i >& possibleVoxels) = 0;
+		virtual void MeshScene(ITMMesh *mesh, const ITMScene<TVoxel,TIndex> *scene, std::vector< Vector3i >& voxelsIter) = 0;
 
 		ITMMeshingEngine(void) { }
 		virtual ~ITMMeshingEngine(void) { }
