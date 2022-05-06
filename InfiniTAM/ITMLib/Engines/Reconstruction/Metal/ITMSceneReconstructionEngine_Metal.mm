@@ -137,7 +137,7 @@ void ITMSceneReconstructionEngine_Metal<TVoxel,ITMVoxelBlockHash>::BuildAllocAnd
 template<class TVoxel>
 void ITMSceneReconstructionEngine_Metal<TVoxel, ITMVoxelBlockHash>::AllocateSceneFromDepth(ITMScene<TVoxel, ITMVoxelBlockHash> *scene, const ITMView *view,
                                                                                            const ITMTrackingState *trackingState, const ITMRenderState *renderState,
-                                                                                           bool onlyUpdateVisibleList, bool resetVisibleList, std::vector<ITMHashEntry> hashEntries)
+                                                                                           bool onlyUpdateVisibleList, bool resetVisibleList, std::vector<Vector3i> possibleVoxels)
 {
     Vector2i depthImgSize = view->depth->noDims;
     float voxelSize = scene->sceneParams->voxelSize;
@@ -207,7 +207,6 @@ void ITMSceneReconstructionEngine_Metal<TVoxel, ITMVoxelBlockHash>::AllocateScen
                         hashEntry.pos.x = pt_block_all.x; hashEntry.pos.y = pt_block_all.y; hashEntry.pos.z = pt_block_all.z;
                         hashEntry.ptr = voxelAllocationList[vbaIdx];
                         hashEntry.offset = 0;
-                        hashEntries.push_back(hashEntry);
                         hashTable[targetIdx] = hashEntry;
                     }
 
@@ -228,9 +227,7 @@ void ITMSceneReconstructionEngine_Metal<TVoxel, ITMVoxelBlockHash>::AllocateScen
                         int exlOffset = excessAllocationList[exlIdx];
 
                         hashTable[targetIdx].offset = exlOffset + 1; //connect to child
-                        hashEntries.back() = exlOffset + 1;
                         hashTable[SDF_BUCKET_NUM + exlOffset] = hashEntry; //add child to the excess list
-                        hashEntries.push_back(hashEntry);
                         entriesVisibleType[SDF_BUCKET_NUM + exlOffset] = 1; //make child visible and in memory
                     }
 

@@ -23,7 +23,7 @@ namespace ITMLib
         
         void AllocateSceneFromDepth(ITMScene<TVoxel, ITMVoxelBlockHash> *scene, const ITMView *view,
                                     const ITMTrackingState *trackingState, const ITMRenderState *renderState,
-                                    bool onlyUpdateVisibleList = false, bool resetVisibleList = false, std::vector<ITMHashEntry> hashEntries);
+                                    bool onlyUpdateVisibleList = false, bool resetVisibleList = false, std::vector<Vector3i> possibleVoxels);
         
         ITMSceneReconstructionEngine_Metal(void);
     };

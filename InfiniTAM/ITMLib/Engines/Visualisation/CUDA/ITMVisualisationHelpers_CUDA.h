@@ -18,11 +18,11 @@ namespace ITMLib
 
 	__global__ void countVisibleBlocks_device(const int *visibleEntryIDs, int noVisibleEntries, const ITMHashEntry *hashTable, uint *noBlocks, int minBlockId, int maxBlockId);
 
-	__global__ void projectAndSplitBlocks_device(const ITMHashEntry *hashEntries, const int *visibleEntryIDs, int noVisibleEntries,
+	__global__ void projectAndSplitBlocks_device(const ITMHashEntry *possibleVoxels, const int *visibleEntryIDs, int noVisibleEntries,
 		const Matrix4f pose_M, const Vector4f intrinsics, const Vector2i imgSize, float voxelSize, RenderingBlock *renderingBlocks,
 		uint *noTotalBlocks);
 
-	__global__ void checkProjectAndSplitBlocks_device(const ITMHashEntry *hashEntries, int noHashEntries,
+	__global__ void checkProjectAndSplitBlocks_device(const ITMHashEntry *possibleVoxels, int nopossibleVoxels,
 		const Matrix4f pose_M, const Vector4f intrinsics, const Vector2i imgSize, float voxelSize, RenderingBlock *renderingBlocks,
 		uint *noTotalBlocks);
 

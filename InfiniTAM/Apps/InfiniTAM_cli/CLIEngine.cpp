@@ -78,11 +78,13 @@ void CLIEngine::Run()
 	while (true) {
 		if (!ProcessFrame()) break;
 		i++;
-		if (i % 5 == 0)
+		if (i % 1 == 0) {
 			mainEngine->SaveSceneToMesh("dummy");
+			break;
+		}
 		// if (i == 100) // for debugging, save mesh after 100 frames
-		// 	mainEngine->saveMesh("mesh-cli-modified.stl");
 	}
+	mainEngine->saveMesh("mesh-cli-modified.stl");
 }
 
 void CLIEngine::Shutdown()

@@ -35,7 +35,7 @@ namespace ITMLib
 		ITMTrackingController *trackingController;
 
 		ITMScene<TVoxel, TIndex> *scene;
-		std::vector<ITMHashEntry> *hashEntries;
+		std::vector<Vector3i> *possibleVoxels;
 		ITMRenderState *renderState_live;
 		ITMRenderState *renderState_freeview;
 

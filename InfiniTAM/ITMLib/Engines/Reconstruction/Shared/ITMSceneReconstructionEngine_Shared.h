@@ -7,7 +7,7 @@
 
 template<class TVoxel>
 _CPU_AND_GPU_CODE_ inline float computeUpdatedVoxelDepthInfo(DEVICEPTR(TVoxel) &voxel, const THREADPTR(Vector4f) & pt_model, const CONSTPTR(Matrix4f) & M_d,
-	const CONSTPTR(Vector4f) & projParams_d, float mu, int maxW, const CONSTPTR(float) *depth, const CONSTPTR(Vector2i) & imgSize)
+	const CONSTPTR(Vector4f) & projParams_d, float mu, int maxW, const CONSTPTR(float) *depth, const CONSTPTR(Vector2i) & imgSize, std::vector<Vector3i>& possibleVoxels, Vector3i newPos)
 {
 	Vector4f pt_camera; Vector2f pt_image;
 	float depth_measure, eta, oldF, newF;
@@ -43,13 +43,15 @@ _CPU_AND_GPU_CODE_ inline float computeUpdatedVoxelDepthInfo(DEVICEPTR(TVoxel) &
 	// write back
 	voxel.sdf = TVoxel::floatToValue(newF);
 	voxel.w_depth = newW;
+	if (voxel.sdf != 1.0f) // possibly a filled voxel
+		possibleVoxels.push_back(newPos);
 
 	return eta;
 }
 
 template<class TVoxel>
 _CPU_AND_GPU_CODE_ inline float computeUpdatedVoxelDepthInfo(DEVICEPTR(TVoxel) &voxel, const THREADPTR(Vector4f) & pt_model, const CONSTPTR(Matrix4f) & M_d,
-	const CONSTPTR(Vector4f) & projParams_d, float mu, int maxW, const CONSTPTR(float) *depth, const CONSTPTR(float) *confidence, const CONSTPTR(Vector2i) & imgSize)
+	const CONSTPTR(Vector4f) & projParams_d, float mu, int maxW, const CONSTPTR(float) *depth, const CONSTPTR(float) *confidence, const CONSTPTR(Vector2i) & imgSize, std::vector<Vector3i>& possibleVoxels, Vector3i newPos)
 {
 	Vector4f pt_camera; Vector2f pt_image;
 	float depth_measure, eta, oldF, newF;
@@ -85,6 +87,9 @@ _CPU_AND_GPU_CODE_ inline float computeUpdatedVoxelDepthInfo(DEVICEPTR(TVoxel) &
 	voxel.sdf = TVoxel::floatToValue(newF);
 	voxel.w_depth = newW;
 	voxel.confidence += TVoxel::floatToValue(confidence[locId]);
+
+	if (voxel.sdf != 1.0f) // possibly a filled voxel
+		possibleVoxels.push_back(newPos);
 
 	return eta;
 }
@@ -132,9 +137,12 @@ struct ComputeUpdatedVoxelInfo<false, false, TVoxel> {
 		const CONSTPTR(Matrix4f) & M_rgb, const CONSTPTR(Vector4f) & projParams_rgb,
 		float mu, int maxW,
 		const CONSTPTR(float) *depth, const CONSTPTR(float) *confidence, const CONSTPTR(Vector2i) & imgSize_d,
-		const CONSTPTR(Vector4u) *rgb, const CONSTPTR(Vector2i) & imgSize_rgb)
+		const CONSTPTR(Vector4u) *rgb, const CONSTPTR(Vector2i) & imgSize_rgb,
+		std::vector<Vector3i>& possibleVoxels,
+		Vector3i newPos)
+		
 	{
-		computeUpdatedVoxelDepthInfo(voxel, pt_model, M_d, projParams_d, mu, maxW, depth, imgSize_d);
+		computeUpdatedVoxelDepthInfo(voxel, pt_model, M_d, projParams_d, mu, maxW, depth, imgSize_d, possibleVoxels, newPos);
 	}
 };
 
@@ -145,9 +153,11 @@ struct ComputeUpdatedVoxelInfo<true, false, TVoxel> {
 		const THREADPTR(Matrix4f) & M_rgb, const THREADPTR(Vector4f) & projParams_rgb,
 		float mu, int maxW,
 		const CONSTPTR(float) *depth, const CONSTPTR(float) *confidence, const CONSTPTR(Vector2i) & imgSize_d,
-		const CONSTPTR(Vector4u) *rgb, const THREADPTR(Vector2i) & imgSize_rgb)
+		const CONSTPTR(Vector4u) *rgb, const THREADPTR(Vector2i) & imgSize_rgb,
+		std::vector<Vector3i>& possibleVoxels,
+		Vector3i newPos)
 	{
-		float eta = computeUpdatedVoxelDepthInfo(voxel, pt_model, M_d, projParams_d, mu, maxW, depth, imgSize_d);
+		float eta = computeUpdatedVoxelDepthInfo(voxel, pt_model, M_d, projParams_d, mu, maxW, depth, imgSize_d, possibleVoxels, newPos);
 		if ((eta > mu) || (fabs(eta / mu) > 0.25f)) return;
 		computeUpdatedVoxelColorInfo(voxel, pt_model, M_rgb, projParams_rgb, mu, maxW, eta, rgb, imgSize_rgb);
 	}
@@ -160,9 +170,11 @@ struct ComputeUpdatedVoxelInfo<false, true, TVoxel> {
 		const CONSTPTR(Matrix4f) & M_rgb, const CONSTPTR(Vector4f) & projParams_rgb,
 		float mu, int maxW,
 		const CONSTPTR(float) *depth, const CONSTPTR(float) *confidence, const CONSTPTR(Vector2i) & imgSize_d,
-		const CONSTPTR(Vector4u) *rgb, const CONSTPTR(Vector2i) & imgSize_rgb)
+		const CONSTPTR(Vector4u) *rgb, const CONSTPTR(Vector2i) & imgSize_rgb,
+		std::vector<Vector3i>& possibleVoxels,
+		Vector3i newPos)
 	{
-		computeUpdatedVoxelDepthInfo(voxel, pt_model, M_d, projParams_d, mu, maxW, depth, confidence, imgSize_d);
+		computeUpdatedVoxelDepthInfo(voxel, pt_model, M_d, projParams_d, mu, maxW, depth, confidence, imgSize_d, possibleVoxels, newPos);
 	}
 };
 
@@ -173,9 +185,11 @@ struct ComputeUpdatedVoxelInfo<true, true, TVoxel> {
 		const THREADPTR(Matrix4f) & M_rgb, const THREADPTR(Vector4f) & projParams_rgb,
 		float mu, int maxW,
 		const CONSTPTR(float) *depth, const CONSTPTR(float) *confidence, const CONSTPTR(Vector2i) & imgSize_d,
-		const CONSTPTR(Vector4u) *rgb, const THREADPTR(Vector2i) & imgSize_rgb)
+		const CONSTPTR(Vector4u) *rgb, const THREADPTR(Vector2i) & imgSize_rgb,
+		std::vector<Vector3i>& possibleVoxels,
+		Vector3i newPos)
 	{
-		float eta = computeUpdatedVoxelDepthInfo(voxel, pt_model, M_d, projParams_d, mu, maxW, depth, confidence, imgSize_d);
+		float eta = computeUpdatedVoxelDepthInfo(voxel, pt_model, M_d, projParams_d, mu, maxW, depth, confidence, imgSize_d, possibleVoxels, newPos);
 		if ((eta > mu) || (fabs(eta / mu) > 0.25f)) return;
 		computeUpdatedVoxelColorInfo(voxel, pt_model, M_rgb, projParams_rgb, mu, maxW, eta, rgb, imgSize_rgb);
 	}

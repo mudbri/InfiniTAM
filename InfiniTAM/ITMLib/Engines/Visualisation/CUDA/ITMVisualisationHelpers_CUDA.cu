@@ -51,13 +51,13 @@ __global__ void ITMLib::buildCompleteVisibleList_device(const ITMHashEntry *hash
 	}
 }
 
-__global__ void ITMLib::projectAndSplitBlocks_device(const ITMHashEntry *hashEntries, const int *visibleEntryIDs, int noVisibleEntries,
+__global__ void ITMLib::projectAndSplitBlocks_device(const ITMHashEntry *possibleVoxels, const int *visibleEntryIDs, int noVisibleEntries,
 	const Matrix4f pose_M, const Vector4f intrinsics, const Vector2i imgSize, float voxelSize, RenderingBlock *renderingBlocks,
 	uint *noTotalBlocks)
 {
 	int in_offset = threadIdx.x + blockDim.x * blockIdx.x;
 
-	const ITMHashEntry & blockData(hashEntries[visibleEntryIDs[in_offset]]);
+	const ITMHashEntry & blockData(possibleVoxels[visibleEntryIDs[in_offset]]);
 
 	Vector2i upperLeft, lowerRight;
 	Vector2f zRange;
@@ -78,14 +78,14 @@ __global__ void ITMLib::projectAndSplitBlocks_device(const ITMHashEntry *hashEnt
 	CreateRenderingBlocks(renderingBlocks, out_offset, upperLeft, lowerRight, zRange);
 }
 
-__global__ void ITMLib::checkProjectAndSplitBlocks_device(const ITMHashEntry *hashEntries, int noHashEntries,
+__global__ void ITMLib::checkProjectAndSplitBlocks_device(const ITMHashEntry *possibleVoxels, int nopossibleVoxels,
 	const Matrix4f pose_M, const Vector4f intrinsics, const Vector2i imgSize, float voxelSize, RenderingBlock *renderingBlocks,
 	uint *noTotalBlocks)
 {
 	int targetIdx = threadIdx.x + blockDim.x * blockIdx.x;
-	if (targetIdx >= noHashEntries) return;
+	if (targetIdx >= nopossibleVoxels) return;
 
-	const ITMHashEntry & hashEntry = hashEntries[targetIdx];
+	const ITMHashEntry & hashEntry = possibleVoxels[targetIdx];
 
 	Vector2i upperLeft, lowerRight;
 	Vector2f zRange;

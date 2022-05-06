@@ -30,13 +30,13 @@ void ITMDenseMapper<TVoxel,TIndex>::ResetScene(ITMScene<TVoxel,TIndex> *scene) c
 }
 
 template<class TVoxel, class TIndex>
-void ITMDenseMapper<TVoxel,TIndex>::ProcessFrame(const ITMView *view, const ITMTrackingState *trackingState, ITMScene<TVoxel,TIndex> *scene, std::vector<ITMHashEntry>& hashEntries, ITMRenderState *renderState, bool resetVisibleList)
+void ITMDenseMapper<TVoxel,TIndex>::ProcessFrame(const ITMView *view, const ITMTrackingState *trackingState, ITMScene<TVoxel,TIndex> *scene, std::vector<Vector3i>& possibleVoxels, ITMRenderState *renderState, bool resetVisibleList)
 {
 	// allocation
-	sceneRecoEngine->AllocateSceneFromDepth(scene, view, trackingState, renderState, hashEntries, false, resetVisibleList);
+	sceneRecoEngine->AllocateSceneFromDepth(scene, view, trackingState, renderState, possibleVoxels, false, resetVisibleList);
 
 	// integration
-	sceneRecoEngine->IntegrateIntoScene(scene, view, trackingState, renderState);
+	sceneRecoEngine->IntegrateIntoScene(scene, view, trackingState, renderState, possibleVoxels);
 
 	if (swappingEngine != NULL) {
 		// swapping: CPU -> GPU
@@ -58,7 +58,7 @@ void ITMDenseMapper<TVoxel,TIndex>::ProcessFrame(const ITMView *view, const ITMT
 }
 
 template<class TVoxel, class TIndex>
-void ITMDenseMapper<TVoxel,TIndex>::UpdateVisibleList(const ITMView *view, const ITMTrackingState *trackingState, ITMScene<TVoxel,TIndex> *scene, std::vector<ITMHashEntry>& hashEntries, ITMRenderState *renderState, bool resetVisibleList)
+void ITMDenseMapper<TVoxel,TIndex>::UpdateVisibleList(const ITMView *view, const ITMTrackingState *trackingState, ITMScene<TVoxel,TIndex> *scene, std::vector<Vector3i>& possibleVoxels, ITMRenderState *renderState, bool resetVisibleList)
 {
-	sceneRecoEngine->AllocateSceneFromDepth(scene, view, trackingState, renderState, hashEntries, true, resetVisibleList);
+	sceneRecoEngine->AllocateSceneFromDepth(scene, view, trackingState, renderState, possibleVoxels, true, resetVisibleList);
 }
