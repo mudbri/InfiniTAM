@@ -15,7 +15,7 @@ __global__ void meshScene_device(ITMMesh::Triangle *triangles, unsigned int *noT
 	int noMaxTriangles, const Vector4s *visibleBlockGlobalPos, const TVoxel *localVBA, const ITMHashEntry *hashTable);
 
 template<int dummy>
-__global__ void findAllocateBlocks(Vector4s *visibleBlockGlobalPos, const ITMHashEntry *hashTable, int noTotalEntries, std::vector<Vector3i>& possibleVoxels)
+__global__ void findAllocateBlocks(Vector4s *visibleBlockGlobalPos, const ITMHashEntry *hashTable, int noTotalEntries, std::set< Vector3i >& possibleVoxels)
 {
 	int entryId = threadIdx.x + blockIdx.x * blockDim.x;
 	if (entryId > noTotalEntries - 1) return;
@@ -41,7 +41,7 @@ ITMMeshingEngine_CUDA<TVoxel,ITMVoxelBlockHash>::~ITMMeshingEngine_CUDA(void)
 }
 
 template<class TVoxel>
-void ITMMeshingEngine_CUDA<TVoxel, ITMVoxelBlockHash>::MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMVoxelBlockHash> *scene, std::vector<Vector3i>& possibleVoxels)
+void ITMMeshingEngine_CUDA<TVoxel, ITMVoxelBlockHash>::MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMVoxelBlockHash> *scene, std::set< Vector3i >& possibleVoxels)
 {
 	ITMMesh::Triangle *triangles = mesh->triangles->GetData(MEMORYDEVICE_CUDA);
 	const TVoxel *localVBA = scene->localVBA.GetVoxelBlocks();

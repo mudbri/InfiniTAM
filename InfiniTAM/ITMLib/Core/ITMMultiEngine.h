@@ -15,6 +15,7 @@
 #include "../Engines/Meshing/ITMMultiMeshingEngineFactory.h"
 
 #include <vector>
+#include <set>
 
 namespace ITMLib
 {

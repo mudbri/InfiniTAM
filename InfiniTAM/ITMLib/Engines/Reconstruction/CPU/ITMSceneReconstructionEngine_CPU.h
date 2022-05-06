@@ -5,6 +5,7 @@
 #include "../Interface/ITMSceneReconstructionEngine.h"
 #include "../../../Objects/Scene/ITMPlainVoxelArray.h"
 #include <vector>
+#include <set>
 
 namespace ITMLib
 {
@@ -23,10 +24,10 @@ namespace ITMLib
 		void ResetScene(ITMScene<TVoxel, ITMVoxelBlockHash> *scene);
 
 		void AllocateSceneFromDepth(ITMScene<TVoxel, ITMVoxelBlockHash> *scene, const ITMView *view, const ITMTrackingState *trackingState,
-			const ITMRenderState *renderState, std::vector<Vector3i>& possibleVoxels, bool onlyUpdateVisibleList = false, bool resetVisibleList = false);
+			const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels, bool onlyUpdateVisibleList = false, bool resetVisibleList = false);
 
 		void IntegrateIntoScene(ITMScene<TVoxel, ITMVoxelBlockHash> *scene, const ITMView *view, const ITMTrackingState *trackingState,
-			const ITMRenderState *renderState, std::vector<Vector3i>& possibleVoxels);
+			const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels);
 
 		ITMSceneReconstructionEngine_CPU(void);
 		~ITMSceneReconstructionEngine_CPU(void);
@@ -39,10 +40,10 @@ namespace ITMLib
 		void ResetScene(ITMScene<TVoxel, ITMPlainVoxelArray> *scene);
 
 		void AllocateSceneFromDepth(ITMScene<TVoxel, ITMPlainVoxelArray> *scene, const ITMView *view, const ITMTrackingState *trackingState,
-			const ITMRenderState *renderState, std::vector<Vector3i>& possibleVoxels, bool onlyUpdateVisibleList = false, bool resetVisibleList = false);
+			const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels, bool onlyUpdateVisibleList = false, bool resetVisibleList = false);
 
 		void IntegrateIntoScene(ITMScene<TVoxel, ITMPlainVoxelArray> *scene, const ITMView *view, const ITMTrackingState *trackingState,
-			const ITMRenderState *renderState, std::vector<Vector3i>& possibleVoxels);
+			const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels);
 
 		ITMSceneReconstructionEngine_CPU(void);
 		~ITMSceneReconstructionEngine_CPU(void);

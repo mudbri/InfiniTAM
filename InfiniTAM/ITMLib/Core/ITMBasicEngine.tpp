@@ -30,7 +30,7 @@ ITMBasicEngine<TVoxel,TIndex>::ITMBasicEngine(const ITMLibSettings *settings, co
 	MemoryDeviceType memoryType = settings->GetMemoryType();
 	this->scene = new ITMScene<TVoxel,TIndex>(&settings->sceneParams, settings->swappingMode == ITMLibSettings::SWAPPINGMODE_ENABLED, memoryType);
 	
-    possibleVoxels = new std::vector<Vector3i>;
+    possibleVoxels = new std::set< Vector3i >;
 	const ITMLibSettings::DeviceType deviceType = settings->deviceType;
 
 	lowLevelEngine = ITMLowLevelEngineFactory::MakeLowLevelEngine(deviceType);

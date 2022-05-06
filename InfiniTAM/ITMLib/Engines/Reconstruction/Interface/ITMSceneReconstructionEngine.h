@@ -9,6 +9,7 @@
 #include "../../../Objects/Tracking/ITMTrackingState.h"
 #include "../../../Objects/Views/ITMView.h"
 #include <vector>
+#include <set>
 
 namespace ITMLib
 {
@@ -34,13 +35,13 @@ namespace ITMLib
 		    table so that the new image data can be integrated.
 		*/
 		virtual void AllocateSceneFromDepth(ITMScene<TVoxel,TIndex> *scene, const ITMView *view, const ITMTrackingState *trackingState,
-			const ITMRenderState *renderState, std::vector<Vector3i>& possibleVoxels, bool onlyUpdateVisibleList = false, bool resetVisibleList = false) = 0;
+			const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels, bool onlyUpdateVisibleList = false, bool resetVisibleList = false) = 0;
 
 		/** Update the voxel blocks by integrating depth and
 		    possibly colour information from the given view.
 		*/
 		virtual void IntegrateIntoScene(ITMScene<TVoxel,TIndex> *scene, const ITMView *view, const ITMTrackingState *trackingState,
-			const ITMRenderState *renderState, std::vector<Vector3i>& possibleVoxels) = 0;
+			const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels) = 0;
 
 		ITMSceneReconstructionEngine(void) { }
 		virtual ~ITMSceneReconstructionEngine(void) { }

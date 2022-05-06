@@ -13,6 +13,7 @@
 
 #include "../../FernRelocLib/Relocaliser.h"
 #include <vector>
+#include <set>
 
 namespace ITMLib
 {
@@ -35,7 +36,7 @@ namespace ITMLib
 		ITMTrackingController *trackingController;
 
 		ITMScene<TVoxel, TIndex> *scene;
-		std::vector<Vector3i> *possibleVoxels;
+		std::set< Vector3i > *possibleVoxels;
 		ITMRenderState *renderState_live;
 		ITMRenderState *renderState_freeview;
 
