@@ -4,6 +4,8 @@
 
 #include "../Shared/ITMSceneReconstructionEngine_Shared.h"
 #include "../../../Objects/RenderStates/ITMRenderState_VH.h"
+
+
 using namespace ITMLib;
 
 template<class TVoxel>
@@ -108,13 +110,8 @@ void ITMSceneReconstructionEngine_CPU<TVoxel, ITMVoxelBlockHash>::IntegrateIntoS
 			pt_model.z = (float)(globalPos.z + z) * voxelSize;
 			pt_model.w = 1.0f;
 
-			Vector3i newPos = globalPos;
-			newPos.x += x;
-			newPos.y += y;
-			newPos.z += z;
-
 			ComputeUpdatedVoxelInfo<TVoxel::hasColorInformation,TVoxel::hasConfidenceInformation, TVoxel>::compute(localVoxelBlock[locId], pt_model, M_d, 
-				projParams_d, M_rgb, projParams_rgb, mu, maxW, depth, confidence, depthImgSize, rgb, rgbImgSize, possibleVoxels, voxelsIter,newPos);
+				projParams_d, M_rgb, projParams_rgb, mu, maxW, depth, confidence, depthImgSize, rgb, rgbImgSize, possibleVoxels, voxelsIter, globalPos, x, y, z);
 		}
 	}
 }
@@ -384,11 +381,7 @@ void ITMSceneReconstructionEngine_CPU<TVoxel, ITMPlainVoxelArray>::IntegrateInto
 		pt_model.z = (float)(z + arrayInfo->offset.z) * voxelSize;
 		pt_model.w = 1.0f;
 
-		Vector3i newPos;
-		newPos.x = x + arrayInfo->offset.x;
-		newPos.y = y + arrayInfo->offset.y;
-		newPos.z = z + arrayInfo->offset.z;
 		ComputeUpdatedVoxelInfo<TVoxel::hasColorInformation, TVoxel::hasConfidenceInformation, TVoxel>::compute(voxelArray[locId], pt_model, M_d, projParams_d, M_rgb, projParams_rgb, mu, maxW, 
-			depth, depthImgSize, rgb, rgbImgSize, possibleVoxels, voxelsIter, newPos);
+			depth, depthImgSize, rgb, rgbImgSize, possibleVoxels, voxelsIter, arrayInfo->offset, x, y, z);
 	}
 }

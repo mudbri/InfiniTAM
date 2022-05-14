@@ -326,12 +326,7 @@ __global__ void integrateIntoScene_device(TVoxel *voxelArray, const ITMPlainVoxe
 	pt_model.z = (float)(z + arrayInfo->offset.z) * _voxelSize;
 	pt_model.w = 1.0f;
 
-	Vector3i newPos;
-	newPos.x = x + arrayInfo->offset.x;
-	newPos.y = y + arrayInfo->offset.y;
-	newPos.z = z + arrayInfo->offset.z;
-
-	ComputeUpdatedVoxelInfo<TVoxel::hasColorInformation, TVoxel::hasConfidenceInformation, TVoxel>::compute(voxelArray[locId], pt_model, M_d, projParams_d, M_rgb, projParams_rgb, mu, maxW, depth, confidence, depthImgSize, rgb, rgbImgSize, possibleVoxels, voxelsIter, newPos);
+	ComputeUpdatedVoxelInfo<TVoxel::hasColorInformation, TVoxel::hasConfidenceInformation, TVoxel>::compute(voxelArray[locId], pt_model, M_d, projParams_d, M_rgb, projParams_rgb, mu, maxW, depth, confidence, depthImgSize, rgb, rgbImgSize, possibleVoxels, voxelsIter, arrayInfo->offset, x, y, z);
 }
 
 template<class TVoxel, bool stopMaxW>
@@ -364,12 +359,8 @@ __global__ void integrateIntoScene_device(TVoxel *localVBA, const ITMHashEntry *
 	pt_model.z = (float)(globalPos.z + z) * _voxelSize;
 	pt_model.w = 1.0f;
 
-	Vector3i newPos;
-	newPos.x = globalPos.x + x;
-	newPos.y = globalPos.y + y;
-	newPos.z = globalPos.z + z;
 	ComputeUpdatedVoxelInfo<TVoxel::hasColorInformation, TVoxel::hasConfidenceInformation, TVoxel>::compute(localVoxelBlock[locId], 
-		pt_model, M_d, projParams_d, M_rgb, projParams_rgb, mu, maxW, depth, confidence, depthImgSize, rgb, rgbImgSize, possibleVoxels, voxelsIter, newPos);
+		pt_model, M_d, projParams_d, M_rgb, projParams_rgb, mu, maxW, depth, confidence, depthImgSize, rgb, rgbImgSize, possibleVoxels, voxelsIter, globalPos, x, y, z);
 }
 
 __global__ void buildHashAllocAndVisibleType_device(uchar *entriesAllocType, uchar *entriesVisibleType, Vector4s *blockCoords, const float *depth,
