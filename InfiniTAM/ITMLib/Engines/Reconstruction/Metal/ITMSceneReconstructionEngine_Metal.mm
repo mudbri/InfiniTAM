@@ -137,7 +137,7 @@ void ITMSceneReconstructionEngine_Metal<TVoxel,ITMVoxelBlockHash>::BuildAllocAnd
 template<class TVoxel>
 void ITMSceneReconstructionEngine_Metal<TVoxel, ITMVoxelBlockHash>::AllocateSceneFromDepth(ITMScene<TVoxel, ITMVoxelBlockHash> *scene, const ITMView *view,
                                                                                            const ITMTrackingState *trackingState, const ITMRenderState *renderState,
-                                                                                           bool onlyUpdateVisibleList, bool resetVisibleList, std::set< Vector3i > possibleVoxels)
+                                                                                           bool onlyUpdateVisibleList, bool resetVisibleList)
 {
     Vector2i depthImgSize = view->depth->noDims;
     float voxelSize = scene->sceneParams->voxelSize;

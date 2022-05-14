@@ -2,7 +2,7 @@
 
 #include "ITMMeshingEngine_CPU.h"
 #include "../Shared/ITMMeshingEngine_Shared.h"
-#include <set>
+#include <unordered_set>
 
 using namespace ITMLib;
 

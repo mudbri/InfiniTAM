@@ -4,7 +4,7 @@
 
 #include <math.h>
 #include <ostream>
-
+#define SDF_HASH_MASK 0xfffff
 #include "MathUtils.h"
 #include "PlatformIndependence.h"
 
@@ -348,6 +348,7 @@ namespace ORUtils {
 			return (lhs.x != rhs.x) || (lhs.y != rhs.y) || (lhs.z != rhs.z);
 		}
 
+		
 		////////////////////////////////////////////////////////////////////////////////
 		// dimension specific operations
 		////////////////////////////////////////////////////////////////////////////////
@@ -356,6 +357,15 @@ namespace ORUtils {
 			os << dt.x << ", " << dt.y << ", " << dt.z;
 			return os;
 		}
+	};
+
+	class MyHashFunction 
+	{
+		public:
+			template <class T> size_t operator()(const Vector3<T> &blockPos) const
+			{
+				return (((uint)blockPos.x * 73856093u) ^ ((uint)blockPos.y * 19349669u) ^ ((uint)blockPos.z * 83492791u)) & (uint)SDF_HASH_MASK;
+			}
 	};
 
 	////////////////////////////////////////////////////////
@@ -383,6 +393,8 @@ namespace ORUtils {
 		else if (lhs.z >= rhs.z)
 			return false;
 		}
+
+	
 
 	////////////////////////////////////////////////////////
 	//  Non-member functions

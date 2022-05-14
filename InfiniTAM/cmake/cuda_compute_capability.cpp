@@ -12,7 +12,7 @@
 #include <cuda_runtime.h>
 
 #include <iostream>
-#include <set>
+#include <unordered_set>
 #include <sstream>
 
 int main() {

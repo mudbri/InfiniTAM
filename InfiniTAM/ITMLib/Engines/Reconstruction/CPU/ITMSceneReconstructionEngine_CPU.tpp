@@ -46,7 +46,7 @@ void ITMSceneReconstructionEngine_CPU<TVoxel,ITMVoxelBlockHash>::ResetScene(ITMS
 
 template<class TVoxel>
 void ITMSceneReconstructionEngine_CPU<TVoxel, ITMVoxelBlockHash>::IntegrateIntoScene(ITMScene<TVoxel, ITMVoxelBlockHash> *scene, const ITMView *view,
-	const ITMTrackingState *trackingState, const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels, std::vector< Vector3i >& voxelsIter)
+	const ITMTrackingState *trackingState, const ITMRenderState *renderState, std::unordered_set< Vector3i, ORUtils::MyHashFunction >& possibleVoxels, std::vector< Vector3i >& voxelsIter)
 {
 	Vector2i rgbImgSize = view->rgb->noDims;
 	Vector2i depthImgSize = view->depth->noDims;
@@ -121,7 +121,7 @@ void ITMSceneReconstructionEngine_CPU<TVoxel, ITMVoxelBlockHash>::IntegrateIntoS
 
 template<class TVoxel>
 void ITMSceneReconstructionEngine_CPU<TVoxel, ITMVoxelBlockHash>::AllocateSceneFromDepth(ITMScene<TVoxel, ITMVoxelBlockHash> *scene, const ITMView *view,
-	const ITMTrackingState *trackingState, const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels,  bool onlyUpdateVisibleList, bool resetVisibleList)
+	const ITMTrackingState *trackingState, const ITMRenderState *renderState, bool onlyUpdateVisibleList, bool resetVisibleList)
 {
 	Vector2i depthImgSize = view->depth->noDims;
 	float voxelSize = scene->sceneParams->voxelSize;
@@ -334,12 +334,12 @@ void ITMSceneReconstructionEngine_CPU<TVoxel,ITMPlainVoxelArray>::ResetScene(ITM
 
 template<class TVoxel>
 void ITMSceneReconstructionEngine_CPU<TVoxel, ITMPlainVoxelArray>::AllocateSceneFromDepth(ITMScene<TVoxel, ITMPlainVoxelArray> *scene, const ITMView *view,
-	const ITMTrackingState *trackingState, const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels, bool onlyUpdateVisibleList, bool resetVisibleList)
+	const ITMTrackingState *trackingState, const ITMRenderState *renderState, bool onlyUpdateVisibleList, bool resetVisibleList)
 {}
 
 template<class TVoxel>
 void ITMSceneReconstructionEngine_CPU<TVoxel, ITMPlainVoxelArray>::IntegrateIntoScene(ITMScene<TVoxel, ITMPlainVoxelArray> *scene, const ITMView *view,
-	const ITMTrackingState *trackingState, const ITMRenderState *renderState, std::set< Vector3i >& possibleVoxels, std::vector< Vector3i >& voxelsIter)
+	const ITMTrackingState *trackingState, const ITMRenderState *renderState, std::unordered_set< Vector3i, ORUtils::MyHashFunction >& possibleVoxels, std::vector< Vector3i >& voxelsIter)
 {
 	Vector2i rgbImgSize = view->rgb->noDims;
 	Vector2i depthImgSize = view->depth->noDims;

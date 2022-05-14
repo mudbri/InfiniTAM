@@ -6,7 +6,7 @@
 #include "../../Reconstruction/Shared/ITMSceneReconstructionEngine_Shared.h"
 
 #include <vector>
-#include <set>
+#include <unordered_set>
 
 using namespace ITMLib;
 

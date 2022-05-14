@@ -9,7 +9,7 @@
 #include "../../../Objects/RenderStates/ITMRenderState_VH.h"
 
 #include <vector>
-#include <set>
+#include <unordered_set>
 
 using namespace ITMLib;
 

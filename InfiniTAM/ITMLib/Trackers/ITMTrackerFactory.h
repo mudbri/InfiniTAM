@@ -4,7 +4,7 @@
 
 #include <stdexcept>
 #include <vector>
-#include <set>
+#include <unordered_set>
 
 #include "CPU/ITMColorTracker_CPU.h"
 #include "CPU/ITMDepthTracker_CPU.h"

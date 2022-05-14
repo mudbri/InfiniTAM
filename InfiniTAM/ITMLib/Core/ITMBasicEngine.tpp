@@ -30,7 +30,7 @@ ITMBasicEngine<TVoxel,TIndex>::ITMBasicEngine(const ITMLibSettings *settings, co
 	MemoryDeviceType memoryType = settings->GetMemoryType();
 	this->scene = new ITMScene<TVoxel,TIndex>(&settings->sceneParams, settings->swappingMode == ITMLibSettings::SWAPPINGMODE_ENABLED, memoryType);
 	
-    possibleVoxels = new std::set< Vector3i >;
+    possibleVoxels = new std::unordered_set< Vector3i, ORUtils::MyHashFunction >;
     voxelsIter = new std::vector< Vector3i >;
 	const ITMLibSettings::DeviceType deviceType = settings->deviceType;
 
@@ -310,7 +310,7 @@ ITMTrackingState::TrackingResult ITMBasicEngine<TVoxel,TIndex>::ProcessFrame(ITM
 
 			const FernRelocLib::PoseDatabase::PoseInScene & keyframe = relocaliser->RetrievePose(NN);
 			trackingState->pose_d->SetFrom(&keyframe.pose);
-			denseMapper->UpdateVisibleList(view, trackingState, scene, *possibleVoxels, renderState_live, true);
+			denseMapper->UpdateVisibleList(view, trackingState, scene, renderState_live, true);
 			trackingController->Prepare(trackingState, scene, view, visualisationEngine, renderState_live); 
 			trackingController->Track(trackingState, view);
 
@@ -330,7 +330,7 @@ ITMTrackingState::TrackingResult ITMBasicEngine<TVoxel,TIndex>::ProcessFrame(ITM
 
 	if (trackerResult == ITMTrackingState::TRACKING_GOOD || trackerResult == ITMTrackingState::TRACKING_POOR)
 	{
-		if (!didFusion) denseMapper->UpdateVisibleList(view, trackingState, scene, *possibleVoxels, renderState_live, false);
+		if (!didFusion) denseMapper->UpdateVisibleList(view, trackingState, scene, renderState_live, false);
 
 		// raycast to renderState_live for tracking and free visualisation
 		trackingController->Prepare(trackingState, scene, view, visualisationEngine, renderState_live);

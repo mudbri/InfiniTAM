@@ -29,7 +29,7 @@ namespace ITMLib
 	class ITMMeshingEngine_CUDA<TVoxel, ITMPlainVoxelArray> : public ITMMeshingEngine < TVoxel, ITMPlainVoxelArray >
 	{
 	public:
-		void MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMPlainVoxelArray> *scene, std::set< Vector3i >& voxelsIter);
+		void MeshScene(ITMMesh *mesh, const ITMScene<TVoxel, ITMPlainVoxelArray> *scene, std::unordered_set< Vector3i, ORUtils::MyHashFunction >& voxelsIter);
 
 		ITMMeshingEngine_CUDA(void);
 		~ITMMeshingEngine_CUDA(void);
